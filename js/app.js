@@ -13,10 +13,16 @@ document.addEventListener('DOMContentLoaded', function(){
 let allCards = document.getElementsByClassName('card');//returns an HTML collection, can't loop over this for some reason
 let arrayOfCards = [...allCards];//turns HTML collection into an actual array, 'loopable'
 let cardSet = document.querySelector('.deck');
-const flip = function(){
-	this.classList.toggle("open");
-	this.classList.toggle("show");
-}
+let selected = []; //CHANGES
+
+function flipCard() { //CHANGES
+	if(!event.target.classList.contains("open")){ //Prevents matching card to itself
+		event.target.classList.toggle("open"); //keyword THIS works here.
+		event.target.classList.toggle("show");
+		addToSelected();
+	}
+};
+
 function shuffle(array) {// Shuffle function from http://stackoverflow.com/a/2450976
     var currentIndex = array.length, temporaryValue, randomIndex;
 
@@ -30,18 +36,45 @@ function shuffle(array) {// Shuffle function from http://stackoverflow.com/a/245
 
     return array;
 }
+
 function newGame() {//WHAT?! THIS ACTUALLY WORKS!! IT SHUFFLES!!!!!
 	let newDeck = shuffle(arrayOfCards);
 	for(let eachCard of newDeck){
-		eachCard.classList.remove('show', 'open', 'match');//Removes classes, 'hides' card faces
+		eachCard.classList.remove('show', 'open', 'match');//Removes classes on each card, 'hides' faces
       [].forEach.call(newDeck, function(shuffled){
          cardSet.appendChild(shuffled);
   });
   }
 };
 
+function matching(){//adds match class and empties 'list' for next pair of selections
+	selected[0].classList.add('match');
+	event.target.classList.add('match');
+	selected[1].classList.add('match');
+	event.target.classList.add('match');
+	selected = [];
+};
+
+function notMatching(){//flips cards back face down and empties 'list' for next selections
+	selected[0].classList.remove('show','open');
+	selected[1].classList.remove('show','open');
+	selected = [];
+}
+
+function addToSelected() {//Pushes selected card onto a 'list' to check for matching
+	selected.push(event.target);
+	console.log(selected[0].innerHTML);
+	if(selected.length === 2){//need at least 2 cards
+		if(selected[0].innerHTML === selected[1].innerHTML){
+			matching();
+		} else {
+			notMatching();
+		}
+	}
+};
+
 for(let theCard of arrayOfCards){
-	theCard.addEventListener('click', flip);//THE FREAKIN' CARDS FLIP NOW!!!!!! :'D
+	theCard.addEventListener('click', flipCard);//THE FREAKIN' CARDS FLIP NOW!!!!!! :'D
 };
 
 /*
