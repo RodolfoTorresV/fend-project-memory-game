@@ -10,9 +10,9 @@ document.addEventListener('DOMContentLoaded', function(){
 	newGame();
 });
 
-const allCards = document.getElementsByClassName('card');//returns an HTML collection, can't loop over this for some reason
-const arrayOfCards = [...allCards];//turns HTML collection into an actual array, 'loopable'
-const cardSet = document.querySelector('.deck');
+let allCards = document.getElementsByClassName('card');//returns an HTML collection, can't loop over this for some reason
+let arrayOfCards = [...allCards];//turns HTML collection into an actual array, 'loopable'
+let cardSet = document.querySelector('.deck');
 const flip = function(){
 	this.classList.toggle("open");
 	this.classList.toggle("show");
@@ -32,7 +32,8 @@ function shuffle(array) {// Shuffle function from http://stackoverflow.com/a/245
 }
 function newGame() {//WHAT?! THIS ACTUALLY WORKS!! IT SHUFFLES!!!!!
 	let newDeck = shuffle(arrayOfCards);
-	for(let x of newDeck){
+	for(let eachCard of newDeck){
+		eachCard.classList.remove('show', 'open', 'match');//Removes classes, 'hides' card faces
       [].forEach.call(newDeck, function(shuffled){
          cardSet.appendChild(shuffled);
   });
