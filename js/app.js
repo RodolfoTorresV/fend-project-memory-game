@@ -13,13 +13,15 @@ document.addEventListener('DOMContentLoaded', function(){
 let allCards = document.getElementsByClassName('card');//returns an HTML collection, can't loop over this for some reason
 let arrayOfCards = [...allCards];//turns HTML collection into an actual array, 'loopable'
 let cardSet = document.querySelector('.deck');
-let selected = []; //CHANGES
+let selected = [];//CHANGES
 
 function flipCard() { //CHANGES
 	if(!event.target.classList.contains("open")){ //Prevents matching card to itself
+		if(selected.length < 2){
 		event.target.classList.toggle("open"); //keyword THIS works here.
 		event.target.classList.toggle("show");
 		addToSelected();
+	}
 	}
 };
 
@@ -49,17 +51,19 @@ function newGame() {//WHAT?! THIS ACTUALLY WORKS!! IT SHUFFLES!!!!!
 
 function matching(){//adds match class and empties 'list' for next pair of selections
 	selected[0].classList.add('match');
-	event.target.classList.add('match');
 	selected[1].classList.add('match');
-	event.target.classList.add('match');
+	selected[0].classList.remove('open', 'show');
+	selected[1].classList.remove('open', 'show');
 	selected = [];
 };
 
 function notMatching(){//flips cards back face down and empties 'list' for next selections
+	setTimeout(function(){
 	selected[0].classList.remove('show','open');
 	selected[1].classList.remove('show','open');
 	selected = [];
-}
+}, 1500);//Does not run untill 1.500 secs are over.
+};
 
 function addToSelected() {//Pushes selected card onto a 'list' to check for matching
 	selected.push(event.target);
