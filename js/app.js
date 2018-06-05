@@ -14,10 +14,30 @@ let allCards = document.getElementsByClassName('card');//returns an HTML collect
 let arrayOfCards = [...allCards];//turns HTML collection into an actual array, 'loopable'
 let cardSet = document.querySelector('.deck');
 let selected = [];//CHANGES
+let timer = document.querySelector('.timer');
+let second = 0;
+let minute = 0;
+
+
+function startTimer() {
+	setInterval(addSec, 1000);//will run 'addsec' function every 1 second
+	function addSec (){
+		let currentTimer = `${minute} : ${second}`;
+		timer.textContent = currentTimer;
+		second++;//add to second
+		if(second === 60){
+			minute++;//changeove to a minute
+			second = 0;
+			if(minute === 60){//shouldnt take over an hour to make 8 matches.. .
+				timer.textContent = 'Really? Over an hour?!';
+			}
+		}
+	}
+};
 
 function flipCard() { //CHANGES
 	if(!event.target.classList.contains("open")){ //Prevents matching card to itself
-		if(selected.length < 2){
+		if(selected.length < 2){//Prevents flipping over more thaan 2 cards at a time
 		event.target.classList.toggle("open"); //keyword THIS works here.
 		event.target.classList.toggle("show");
 		addToSelected();
@@ -69,6 +89,7 @@ function addToSelected() {//Pushes selected card onto a 'list' to check for matc
 	selected.push(event.target);
 	console.log(selected[0].innerHTML);
 	if(selected.length === 2){//need at least 2 cards
+		startTimer();
 		if(selected[0].innerHTML === selected[1].innerHTML){
 			matching();
 		} else {
