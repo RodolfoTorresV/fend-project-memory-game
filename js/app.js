@@ -19,9 +19,8 @@ let second = 0;
 let minute = 0;
 
 
-function startTimer() {
-	setInterval(addSec, 1000);//will run 'addsec' function every 1 second
-	function addSec (){
+function startTimer() { 
+	setInterval(function() {
 		let currentTimer = `${minute} : ${second}`;
 		timer.textContent = currentTimer;
 		second++;//add to second
@@ -32,7 +31,7 @@ function startTimer() {
 				timer.textContent = 'Really? Over an hour?!';
 			}
 		}
-	}
+	}, 1000);//runs every 1 second
 };
 
 function flipCard() { //CHANGES
@@ -120,3 +119,19 @@ for(let theCard of arrayOfCards){
  *    + increment the move counter and display it on the page (put this functionality in another function that you call from this one)
  *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
  */
+/*function startTimer() { //for some weird reason this timer doesnt work right, learn why.
+	setInterval(addSec, 1000);//will run 'addsec' function every 1 second
+	function addSec (){
+		let currentTimer = `${minute} : ${second}`;
+		timer.textContent = currentTimer;
+		second++;//add to second
+		if(second === 60){
+			minute++;//changeove to a minute
+			second = 0;
+			if(minute === 60){//shouldnt take over an hour to make 8 matches.. .
+				timer.textContent = 'Really? Over an hour?!';
+			}
+		}
+	}
+};
+*/
