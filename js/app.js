@@ -19,10 +19,28 @@ let second = 0;
 let minute = 0;
 let totalMoves = document.querySelector('.moves');
 let moves = 0;
+let estrellas = document.querySelector('.stars');
+
+function starRating() { //Figure out a different, better way.
+	if(moves <= 13) {
+		//3 stars
+		console.log('3 stars');
+	} else if((moves > 13) && (moves <= 18)) {
+		//take away 1 star (2 stars)
+		if(estrellas.childElementCount === 3) {
+			estrellas.firstElementChild.remove();
+		}
+	} else { // moves > 16
+		if(estrellas.childElementCount === 2) {
+			estrellas.firstElementChild.remove();
+		}
+	}	
+};
 
 function numberOfMoves() {
 	moves++;
 	totalMoves.textContent = moves;
+	starRating();
 };
 
 function startTimer() {
