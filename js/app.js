@@ -17,21 +17,29 @@ let selected = [];//CHANGES
 let timer = document.querySelector('.timer');
 let second = 0;
 let minute = 0;
+let totalMoves = document.querySelector('.moves');
+let moves = 0;
 
+function numberOfMoves() {
+	moves++;
+	totalMoves.textContent = moves;
+};
 
-function startTimer() { 
+function startTimer() {
+	if(timer.textContent === '0 : 0'){ //prevents addToSelected function from running timer every 2 clicks
 	setInterval(function() {
 		let currentTimer = `${minute} : ${second}`;
 		timer.textContent = currentTimer;
 		second++;//add to second
 		if(second === 60){
-			minute++;//changeove to a minute
+			minute++;//changeover to a minute
 			second = 0;
-			if(minute === 60){//shouldnt take over an hour to make 8 matches.. .
+			/*if(minute === 60){//shouldnt take over an hour to make 8 matches.. .
 				timer.textContent = 'Really? Over an hour?!';
-			}
+			}*///Learn about 'clearInterval' to stop timer and display message
 		}
 	}, 1000);//runs every 1 second
+};
 };
 
 function flipCard() { //CHANGES
@@ -56,7 +64,7 @@ function shuffle(array) {// Shuffle function from http://stackoverflow.com/a/245
     }
 
     return array;
-}
+};
 
 function newGame() {//WHAT?! THIS ACTUALLY WORKS!! IT SHUFFLES!!!!!
 	let newDeck = shuffle(arrayOfCards);
@@ -89,6 +97,7 @@ function addToSelected() {//Pushes selected card onto a 'list' to check for matc
 	console.log(selected[0].innerHTML);
 	if(selected.length === 2){//need at least 2 cards
 		startTimer();
+		numberOfMoves();
 		if(selected[0].innerHTML === selected[1].innerHTML){
 			matching();
 		} else {
