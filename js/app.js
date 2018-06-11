@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', function(){
 	newGame();
 });
 
+const restartButton = document.querySelector('.restart');
 let allCards = document.getElementsByClassName('card');//returns an HTML collection, can't loop over this for some reason
 let arrayOfCards = [...allCards];//turns HTML collection into an actual array, 'loopable'
 let cardSet = document.querySelector('.deck');
@@ -20,6 +21,23 @@ let minute = 0;
 let totalMoves = document.querySelector('.moves');
 let moves = 0;
 let estrellas = document.querySelector('.stars');
+let elTiempo;
+
+function startTimer() {
+	elTiempo = setInterval(function() {
+	let currentTimer = `${minute} : ${second}`;
+	timer.textContent = currentTimer;
+	second++;//add to second
+	if(second === 60){
+		minute++;//changeover to a minute
+		second = 0;
+		if(minute === 60){//shouldnt take over an hour to make 8 matches.. .
+			resetTimer();
+			timer.textContent = 'Really? Over an hour?!';
+			}//Learn about 'clearInterval' to stop timer and display message
+		}
+	}, 1000);
+};
 
 function starRating() { //Figure out a different, better way.
 	if(moves <= 13) {
@@ -37,27 +55,35 @@ function starRating() { //Figure out a different, better way.
 	}	
 };
 
+function resetStars() {
+	if(estrellas.childElementCount < 3) {
+		let respawn = document.createElement('li');
+		respawn.innerHTML = '<i class="fa fa-star"></i>';
+		estrellas.appendChild(respawn);
+		resetStars();
+	}
+};
+
 function numberOfMoves() {
 	moves++;
 	totalMoves.textContent = moves;
 	starRating();
+	if(moves === 1) {
+		startTimer();
+	}
 };
 
-function startTimer() {
-	if(timer.textContent === '0 : 0'){ //prevents addToSelected function from running timer every 2 clicks
-	setInterval(function() {
-		let currentTimer = `${minute} : ${second}`;
-		timer.textContent = currentTimer;
-		second++;//add to second
-		if(second === 60){
-			minute++;//changeover to a minute
-			second = 0;
-			/*if(minute === 60){//shouldnt take over an hour to make 8 matches.. .
-				timer.textContent = 'Really? Over an hour?!';
-			}*///Learn about 'clearInterval' to stop timer and display message
-		}
-	}, 1000);//runs every 1 second
+function resetMoves() {
+	moves = 0;
+	totalMoves.textContent = moves;
+	resetTimer();
 };
+
+function resetTimer() {
+	clearInterval(elTiempo);
+	minute = 0;
+	second = 0;
+	timer.textContent = '0 : 0';
 };
 
 function flipCard() { //CHANGES
@@ -72,26 +98,30 @@ function flipCard() { //CHANGES
 
 function shuffle(array) {// Shuffle function from http://stackoverflow.com/a/2450976
     var currentIndex = array.length, temporaryValue, randomIndex;
-
     while (currentIndex !== 0) {
         randomIndex = Math.floor(Math.random() * currentIndex);
         currentIndex -= 1;
         temporaryValue = array[currentIndex];
         array[currentIndex] = array[randomIndex];
         array[randomIndex] = temporaryValue;
-    }
-
-    return array;
+    } return array;
 };
 
 function newGame() {//WHAT?! THIS ACTUALLY WORKS!! IT SHUFFLES!!!!!
 	let newDeck = shuffle(arrayOfCards);
 	for(let eachCard of newDeck){
 		eachCard.classList.remove('show', 'open', 'match');//Removes classes on each card, 'hides' faces
-      [].forEach.call(newDeck, function(shuffled){
-         cardSet.appendChild(shuffled);
-  });
-  }
+		[].forEach.call(newDeck, function(shuffled){
+			cardSet.appendChild(shuffled);
+  		});
+	}
+};
+
+function restart() {
+	newGame();
+	resetMoves();
+	resetTimer()
+	resetStars();
 };
 
 function matching(){//adds match class and empties 'list' for next pair of selections
@@ -114,7 +144,6 @@ function addToSelected() {//Pushes selected card onto a 'list' to check for matc
 	selected.push(event.target);
 	console.log(selected[0].innerHTML);
 	if(selected.length === 2){//need at least 2 cards
-		startTimer();
 		numberOfMoves();
 		if(selected[0].innerHTML === selected[1].innerHTML){
 			matching();
@@ -128,6 +157,7 @@ for(let theCard of arrayOfCards){
 	theCard.addEventListener('click', flipCard);//THE FREAKIN' CARDS FLIP NOW!!!!!! :'D
 };
 
+restartButton.addEventListener('click', restart);//starts a fresh new game
 /*
  * Display the cards on the page
  *   - shuffle the list of cards using the provided "shuffle" method below
