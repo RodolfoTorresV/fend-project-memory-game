@@ -11,27 +11,34 @@ document.addEventListener('DOMContentLoaded', function(){
 });
 
 const restartButton = document.querySelector('.restart');
+const againButton = document.querySelector('.again');
+const noThanksButton = document.querySelector('.nope');
+const modal = document.getElementById('modal');
+const deck = document.querySelector('.deck');
 let allCards = document.getElementsByClassName('card');//returns an HTML collection, can't loop over this for some reason
 let arrayOfCards = [...allCards];//turns HTML collection into an actual array, 'loopable'
 let cardSet = document.querySelector('.deck');
-let selected = [];//CHANGES
-let timer = document.querySelector('.timer');
-let second = 0;
-let minute = 0;
-let totalMoves = document.querySelector('.moves');
+let selected = [];//CHANGES, let instead of const
+let timer = document.querySelector('.timer'); //const??
+let seconds = 0;
+let minutes = 0;
+let totalMoves = document.querySelector('.moves');//const?
 let moves = 0;
-let estrellas = document.querySelector('.stars');
+let matches = 0;
+let estrellas = document.querySelector('.stars'); //const?
+let starCount = 3;
 let elTiempo;
+let stats = document.querySelector('.stats');
 
 function startTimer() {
 	elTiempo = setInterval(function() {
-	let currentTimer = `${minute} : ${second}`;
+	let currentTimer = `${minutes} : ${seconds}`;
 	timer.textContent = currentTimer;
-	second++;//add to second
-	if(second === 60){
-		minute++;//changeover to a minute
-		second = 0;
-		if(minute === 60){//shouldnt take over an hour to make 8 matches.. .
+	seconds++;//add to second
+	if(seconds === 60){
+		minutes++;//changeover to a minute
+		seconds = 0;
+		if(minutes === 60){//shouldnt take over an hour to make 8 matches.. .
 			resetTimer();
 			timer.textContent = 'Really? Over an hour?!';
 			}//Learn about 'clearInterval' to stop timer and display message
@@ -46,11 +53,17 @@ function starRating() { //Figure out a different, better way.
 	} else if((moves > 13) && (moves <= 18)) {
 		//take away 1 star (2 stars)
 		if(estrellas.childElementCount === 3) {
+			console.log('2 stars');
 			estrellas.firstElementChild.remove();
+			starCount--;
+			console.log(starCount);		
 		}
 	} else { // moves > 16
 		if(estrellas.childElementCount === 2) {
+			console.log('1 star');
 			estrellas.firstElementChild.remove();
+			starCount--;
+			console.log(starCount);	
 		}
 	}	
 };
@@ -81,9 +94,13 @@ function resetMoves() {
 
 function resetTimer() {
 	clearInterval(elTiempo);
-	minute = 0;
-	second = 0;
+	minutes = 0;
+	seconds = 0;
 	timer.textContent = '0 : 0';
+};
+
+function stopTimer() {
+	clearInterval(elTiempo);
 };
 
 function flipCard() { //CHANGES
@@ -122,6 +139,8 @@ function restart() {
 	resetMoves();
 	resetTimer()
 	resetStars();
+	matches = 0;
+	starCount = 3;
 };
 
 function matching(){//adds match class and empties 'list' for next pair of selections
@@ -130,6 +149,10 @@ function matching(){//adds match class and empties 'list' for next pair of selec
 	selected[0].classList.remove('open', 'show');
 	selected[1].classList.remove('open', 'show');
 	selected = [];
+	matches++;
+		if(matches === 8) {
+			endGame();
+		};
 };
 
 function notMatching(){//flips cards back face down and empties 'list' for next selections
@@ -153,11 +176,38 @@ function addToSelected() {//Pushes selected card onto a 'list' to check for matc
 	}
 };
 
+function endGame() {
+	stopTimer();
+	deck.classList.add('grayBlur');
+	retrieveStats();
+	modal.style.visibility = 'visible';
+};
+
+function retrieveStats() {
+	stats.innerHTML = `<p>Here's how you did.</p>
+	<p>You received a <b>${starCount}</b> star rating for completing the set in <b>${moves}</b> moves.</p>
+	<p>You've spent <b>${minutes}</b> minutes and <b>${seconds}</b> seconds of your life matching cards today!</p>`;	
+};
+
 for(let theCard of arrayOfCards){
 	theCard.addEventListener('click', flipCard);//THE FREAKIN' CARDS FLIP NOW!!!!!! :'D
 };
 
 restartButton.addEventListener('click', restart);//starts a fresh new game
+
+againButton.addEventListener('click', function(){
+	modal.style.visibility = 'hidden';//remove from screen
+	deck.classList.remove('grayBlur');
+	restart();//also starts a fresh new game
+});
+
+noThanksButton.addEventListener('click', function() {
+	modal.style.visibility = 'hidden';
+	deck.classList.remove('grayBlur');
+})
+
+
+
 /*
  * Display the cards on the page
  *   - shuffle the list of cards using the provided "shuffle" method below

@@ -34,9 +34,57 @@ h1 {
 }
 
 /*
+ * Styles for the pop-up modal
+ */
+#modal {
+    position: fixed;
+    visibility: hidden;/*By default, switch with JS*/
+    border: solid 2px red;
+    background-color: white;
+    width: 75%;
+    height: 350px;
+    padding: 10px 25px 10px 25px;
+}
+
+#modal .congrats {
+    width: 100%;
+    height: 33%;
+    text-align: center;
+    border: solid 2px blue;
+}
+
+#modal .congrats h2 {
+    margin: 15px;
+}
+
+#modal .congrats p {
+    margin: 2px 0px 2px 0px;
+}
+
+#modal .stats {
+    width: 100%;
+    height: 33%;
+    border: solid 2px green;
+}
+
+#modal .stats p {
+    text-align: center;
+    margin: 2px 0px 2px 0px;
+}
+
+#modal .options {
+    text-align: center;
+    width: 100%;
+    height: 33%;
+    border: solid 2px yellow;
+}
+
+.grayBlur {
+    filter: blur(5px) grayscale(75%);
+}
+/*
  * Styles for the deck of cards
  */
-
 .deck {
     width: 660px;
     min-height: 680px;
