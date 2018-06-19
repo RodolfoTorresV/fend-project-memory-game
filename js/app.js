@@ -15,22 +15,22 @@ const againButton = document.querySelector('.again');
 const noThanksButton = document.querySelector('.nope');
 const modal = document.getElementById('modal');
 const deck = document.querySelector('.deck');
-let allCards = document.getElementsByClassName('card');//returns an HTML collection, can't loop over this for some reason
+let allCards = document.getElementsByClassName('card');//returns an HTML collection, can't loop over this(research)
 let arrayOfCards = [...allCards];//turns HTML collection into an actual array, 'loopable'
 let cardSet = document.querySelector('.deck');
-let selected = [];//CHANGES, let instead of const
-let timer = document.querySelector('.timer'); //const??
+let selected = [];
+let timer = document.querySelector('.timer');
 let seconds = 0;
 let minutes = 0;
-let totalMoves = document.querySelector('.moves');//const?
+let totalMoves = document.querySelector('.moves');
 let moves = 0;
 let matches = 0;
-let estrellas = document.querySelector('.stars'); //const?
+let estrellas = document.querySelector('.stars');
 let starCount = 3;
 let elTiempo;
 let stats = document.querySelector('.stats');
 
-function startTimer() {
+function startTimer() {//begins timer
 	elTiempo = setInterval(function() {
 	let currentTimer = `${minutes} : ${seconds}`;
 	timer.textContent = currentTimer;
@@ -41,12 +41,12 @@ function startTimer() {
 		if(minutes === 60){//shouldnt take over an hour to make 8 matches.. .
 			resetTimer();
 			timer.textContent = 'Really? Over an hour?!';
-			}//Learn about 'clearInterval' to stop timer and display message
+			}
 		}
 	}, 1000);
 };
 
-function starRating() { //Figure out a different, better way.
+function starRating() {//Removes stars depending on amount of moves made (Research a different, better way.)
 	if(moves <= 13) {
 		//3 stars
 		console.log('3 stars');
@@ -58,7 +58,7 @@ function starRating() { //Figure out a different, better way.
 			starCount--;
 			console.log(starCount);		
 		}
-	} else { // moves > 16
+	} else { // moves > 16 only 1 star
 		if(estrellas.childElementCount === 2) {
 			console.log('1 star');
 			estrellas.firstElementChild.remove();
@@ -68,45 +68,45 @@ function starRating() { //Figure out a different, better way.
 	}	
 };
 
-function resetStars() {
+function resetStars() {//Start with 3 stars every time
 	if(estrellas.childElementCount < 3) {
 		let respawn = document.createElement('li');
 		respawn.innerHTML = '<i class="fa fa-star"></i>';
 		estrellas.appendChild(respawn);
-		resetStars();
+		resetStars();//do it again until I have 3 stars
 	}
 };
 
-function numberOfMoves() {
+function numberOfMoves() {//move counter
 	moves++;
 	totalMoves.textContent = moves;
 	starRating();
 	if(moves === 1) {
-		startTimer();
+		startTimer();//begin timer once BOTH cards flip
 	}
 };
 
-function resetMoves() {
+function resetMoves() {//reset move counter
 	moves = 0;
 	totalMoves.textContent = moves;
 	resetTimer();
 };
 
-function resetTimer() {
+function resetTimer() {//reset timer back to 0:0 along with 'moves'
 	clearInterval(elTiempo);
 	minutes = 0;
 	seconds = 0;
 	timer.textContent = '0 : 0';
 };
 
-function stopTimer() {
+function stopTimer() {//stops timer, clears interval
 	clearInterval(elTiempo);
 };
 
-function flipCard() { //CHANGES
+function flipCard() { //"Flips cards", adds 'open' and 'show' class. 
 	if(!event.target.classList.contains("open")){ //Prevents matching card to itself
 		if(selected.length < 2){//Prevents flipping over more thaan 2 cards at a time
-		event.target.classList.toggle("open"); //keyword THIS works here.
+		event.target.classList.toggle("open"); //(keyword THIS works here, research why)
 		event.target.classList.toggle("show");
 		addToSelected();
 	}
@@ -116,7 +116,7 @@ function flipCard() { //CHANGES
 function shuffle(array) {// Shuffle function from http://stackoverflow.com/a/2450976
     var currentIndex = array.length, temporaryValue, randomIndex;
     while (currentIndex !== 0) {
-        randomIndex = Math.floor(Math.random() * currentIndex);
+        randomIndex = Math.floor(Math.random() * currentIndex);//Research and learn more
         currentIndex -= 1;
         temporaryValue = array[currentIndex];
         array[currentIndex] = array[randomIndex];
@@ -124,17 +124,17 @@ function shuffle(array) {// Shuffle function from http://stackoverflow.com/a/245
     } return array;
 };
 
-function newGame() {//WHAT?! THIS ACTUALLY WORKS!! IT SHUFFLES!!!!!
+function newGame() {//shuffles cards and places all 'face down' to begin new game
 	let newDeck = shuffle(arrayOfCards);
 	for(let eachCard of newDeck){
 		eachCard.classList.remove('show', 'open', 'match');//Removes classes on each card, 'hides' faces
-		[].forEach.call(newDeck, function(shuffled){
+		[].forEach.call(newDeck, function(shuffled){//research [].forEach.call
 			cardSet.appendChild(shuffled);
   		});
 	}
 };
 
-function restart() {
+function restart() {//resets everything back to 0 plus shuffles new deck of cards
 	newGame();
 	resetMoves();
 	resetTimer()
@@ -160,7 +160,7 @@ function notMatching(){//flips cards back face down and empties 'list' for next 
 	selected[0].classList.remove('show','open');
 	selected[1].classList.remove('show','open');
 	selected = [];
-}, 1500);//Does not run untill 1.500 secs are over.
+}, 1500);//Does not run untill 1.5 secs are over.
 };
 
 function addToSelected() {//Pushes selected card onto a 'list' to check for matching
@@ -176,32 +176,32 @@ function addToSelected() {//Pushes selected card onto a 'list' to check for matc
 	}
 };
 
-function endGame() {
+function endGame() {//stops time and shows message to user
 	stopTimer();
 	deck.classList.add('grayBlur');
 	retrieveStats();
 	modal.style.visibility = 'visible';
 };
 
-function retrieveStats() {
+function retrieveStats() {//message retrieves moves, star rating and timer for user
 	stats.innerHTML = `<p>Here's how you did.</p>
 	<p>You received a <b>${starCount}</b> star rating for completing the set in <b>${moves}</b> moves.</p>
 	<p>You've spent <b>${minutes}</b> minutes and <b>${seconds}</b> seconds of your life matching cards today!</p>`;	
 };
 
-for(let theCard of arrayOfCards){
-	theCard.addEventListener('click', flipCard);//THE FREAKIN' CARDS FLIP NOW!!!!!! :'D
+for(let theCard of arrayOfCards){//'flips' each card when clicked
+	theCard.addEventListener('click', flipCard);
 };
 
-restartButton.addEventListener('click', restart);//starts a fresh new game
+restartButton.addEventListener('click', restart);//starts a fresh new game when clicked
 
-againButton.addEventListener('click', function(){
+againButton.addEventListener('click', function() {
 	modal.style.visibility = 'hidden';//remove from screen
 	deck.classList.remove('grayBlur');
 	restart();//also starts a fresh new game
 });
 
-noThanksButton.addEventListener('click', function() {
+noThanksButton.addEventListener('click', function() {//just removes modal,
 	modal.style.visibility = 'hidden';
 	deck.classList.remove('grayBlur');
 })
@@ -226,19 +226,3 @@ noThanksButton.addEventListener('click', function() {
  *    + increment the move counter and display it on the page (put this functionality in another function that you call from this one)
  *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
  */
-/*function startTimer() { //for some weird reason this timer doesnt work right, learn why.
-	setInterval(addSec, 1000);//will run 'addsec' function every 1 second
-	function addSec (){
-		let currentTimer = `${minute} : ${second}`;
-		timer.textContent = currentTimer;
-		second++;//add to second
-		if(second === 60){
-			minute++;//changeove to a minute
-			second = 0;
-			if(minute === 60){//shouldnt take over an hour to make 8 matches.. .
-				timer.textContent = 'Really? Over an hour?!';
-			}
-		}
-	}
-};
-*/
