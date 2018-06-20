@@ -31,19 +31,19 @@ let elTiempo;
 let stats = document.querySelector('.stats');
 
 function startTimer() {//begins timer
-	elTiempo = setInterval(function() {
-	let currentTimer = `${minutes} : ${seconds}`;
-	timer.textContent = currentTimer;
-	seconds++;//add to second
-	if(seconds === 60){
-		minutes++;//changeover to a minute
-		seconds = 0;
-		if(minutes === 60){//shouldnt take over an hour to make 8 matches.. .
-			resetTimer();
-			timer.textContent = 'Really? Over an hour?!';
+		elTiempo = setInterval(function() {
+		let currentTimer = `${minutes} : ${seconds}`;
+		timer.textContent = currentTimer;
+		seconds++;//add to second
+		if(seconds === 60){
+			minutes++;//changeover to a minute
+			seconds = 0;
+			if(minutes === 60){//shouldnt take over an hour to make 8 matches.. .
+				resetTimer();
+				timer.textContent = 'Really? Over an hour?!';
+				}
 			}
-		}
-	}, 1000);
+		}, 1000);
 };
 
 function starRating() {//Removes stars depending on amount of moves made (Research a different, better way.)
@@ -58,7 +58,7 @@ function starRating() {//Removes stars depending on amount of moves made (Resear
 			starCount--;
 			console.log(starCount);		
 		}
-	} else { // moves > 16 only 1 star
+	} else { // moves > 18 only 1 star
 		if(estrellas.childElementCount === 2) {
 			console.log('1 star');
 			estrellas.firstElementChild.remove();
@@ -81,9 +81,6 @@ function numberOfMoves() {//move counter
 	moves++;
 	totalMoves.textContent = moves;
 	starRating();
-	if(moves === 1) {
-		startTimer();//begin timer once BOTH cards flip
-	}
 };
 
 function resetMoves() {//reset move counter
@@ -141,6 +138,7 @@ function restart() {//resets everything back to 0 plus shuffles new deck of card
 	resetStars();
 	matches = 0;
 	starCount = 3;
+	selected = [];
 };
 
 function matching(){//adds match class and empties 'list' for next pair of selections
@@ -160,20 +158,21 @@ function notMatching(){//flips cards back face down and empties 'list' for next 
 	selected[0].classList.remove('show','open');
 	selected[1].classList.remove('show','open');
 	selected = [];
-}, 1500);//Does not run untill 1.5 secs are over.
+	}, 1500);//Does not run untill 1.5 secs are over.
 };
 
-function addToSelected() {//Pushes selected card onto a 'list' to check for matching
+function addToSelected() {//Pushes selected card onto a 'list' to check for 
 	selected.push(event.target);
 	console.log(selected[0].innerHTML);
-	if(selected.length === 2){//need at least 2 cards
-		numberOfMoves();
-		if(selected[0].innerHTML === selected[1].innerHTML){
-			matching();
-		} else {
-			notMatching();
-		}
-	}
+	if((selected.length === 1) && (minutes === 0 && seconds === 0)){
+		startTimer();
+	} else if(selected.length === 2){//need at least 2 cards
+			numberOfMoves();
+			} if(selected[0].innerHTML === selected[1].innerHTML) {
+				matching();
+			} else {
+				notMatching();
+			}
 };
 
 function endGame() {//stops time and shows message to user
