@@ -28,6 +28,7 @@ let matches = 0;
 let estrellas = document.querySelector('.stars');
 let starCount = 3;
 let elTiempo;
+let timeSwitch = 0;
 let stats = document.querySelector('.stats');
 
 function startTimer() {//begins timer
@@ -46,7 +47,7 @@ function startTimer() {//begins timer
 		}, 1000);
 };
 
-function starRating() {//Removes stars depending on amount of moves made (Research a different, better way.)
+function removeStar() {//Removes stars depending on amount of moves made (Research a different, better way.)
 	if(moves <= 13) {
 		//3 stars
 		console.log('3 stars');
@@ -80,7 +81,7 @@ function resetStars() {//Start with 3 stars every time
 function numberOfMoves() {//move counter
 	moves++;
 	totalMoves.textContent = moves;
-	starRating();
+	removeStar();
 };
 
 function resetMoves() {//reset move counter
@@ -103,10 +104,14 @@ function stopTimer() {//stops timer, clears interval
 function flipCard() { //"Flips cards", adds 'open' and 'show' class. 
 	if(!event.target.classList.contains("open")){ //Prevents matching card to itself
 		if(selected.length < 2){//Prevents flipping over more thaan 2 cards at a time
-		event.target.classList.toggle("open"); //(keyword THIS works here, research why)
-		event.target.classList.toggle("show");
+			event.target.classList.toggle("open"); //(keyword THIS works here, research why)
+			event.target.classList.toggle("show");
+			timeSwitch++;
+		if(timeSwitch === 1) {
+			startTimer();
+		};	
 		addToSelected();
-	}
+		}
 	}
 };
 
@@ -139,6 +144,7 @@ function restart() {//resets everything back to 0 plus shuffles new deck of card
 	matches = 0;
 	starCount = 3;
 	selected = [];
+	timeSwitch = 0;
 };
 
 function matching(){//adds match class and empties 'list' for next pair of selections
@@ -164,15 +170,13 @@ function notMatching(){//flips cards back face down and empties 'list' for next 
 function addToSelected() {//Pushes selected card onto a 'list' to check for 
 	selected.push(event.target);
 	console.log(selected[0].innerHTML);
-	if((selected.length === 1) && (minutes === 0 && seconds === 0)){
-		startTimer();
-	} else if(selected.length === 2){//need at least 2 cards
-			numberOfMoves();
-			} if(selected[0].innerHTML === selected[1].innerHTML) {
-				matching();
-			} else {
-				notMatching();
-			}
+	if(selected.length === 2){//need at least 2 cards
+		numberOfMoves();
+		} if(selected[0].innerHTML === selected[1].innerHTML) {
+			matching();
+		} else {
+			notMatching();
+		}
 };
 
 function endGame() {//stops time and shows message to user
@@ -189,7 +193,7 @@ function retrieveStats() {//message retrieves moves, star rating and timer for u
 };
 
 for(let theCard of arrayOfCards){//'flips' each card when clicked
-	theCard.addEventListener('click', flipCard);
+	theCard.addEventListener('click', flipCard)
 };
 
 restartButton.addEventListener('click', restart);//starts a fresh new game when clicked
