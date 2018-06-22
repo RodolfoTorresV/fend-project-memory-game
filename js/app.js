@@ -33,9 +33,9 @@ let stats = document.querySelector('.stats');
 
 function startTimer() {//begins timer
 		elTiempo = setInterval(function() {
+		seconds++;//add to second
 		let currentTimer = `${minutes} : ${seconds}`;
 		timer.textContent = currentTimer;
-		seconds++;//add to second
 		if(seconds === 60){
 			minutes++;//changeover to a minute
 			seconds = 0;
@@ -107,10 +107,10 @@ function flipCard() { //"Flips cards", adds 'open' and 'show' class.
 			event.target.classList.toggle("open"); //(keyword THIS works here, research why)
 			event.target.classList.toggle("show");
 			timeSwitch++;
-		if(timeSwitch === 1) {
-			startTimer();
-		};	
-		addToSelected();
+				if(timeSwitch === 1) {
+					startTimer();
+	    		};	
+			addToSelected();
 		}
 	}
 };
@@ -193,7 +193,7 @@ function retrieveStats() {//message retrieves moves, star rating and timer for u
 };
 
 for(let theCard of arrayOfCards){//'flips' each card when clicked
-	theCard.addEventListener('click', flipCard)
+	theCard.addEventListener('click', flipCard)	
 };
 
 restartButton.addEventListener('click', restart);//starts a fresh new game when clicked

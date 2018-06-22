@@ -179,6 +179,18 @@ h1 {
     padding: 0px 20px 0px 20px;
 }
 
+@media screen and (min-width: 320px) and (max-width: 375px) {
+    .deck {
+        width: 100%;
+        height: 370px;
+    }
+
+    .deck .card {
+        width: 70px;
+        height: 70px;
+    }
+}
+
 @media screen and (min-width: 475px) {
     .deck {
         width: 450px;
